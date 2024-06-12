@@ -1,17 +1,13 @@
 import NextAuth from "next-auth"
 import authConfig from "@/auth.config"
-
-import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { getUserById } from "@/helpers/user"
 import { getAccountByUserId } from "@/helpers/account"
 import { getTwoFactorConfirmationByUserId } from "@/helpers/two-factor-confirmation"
-import { db } from "./lib/db"
+import { db } from "@/lib/db"
 
-const prisma = new PrismaClient()
-
-export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
-    adapter: PrismaAdapter(prisma),
+export const { handlers: { GET, POST }, auth, signIn, signOut, unstable_update } = NextAuth({
+    adapter: PrismaAdapter(db),
     session: { strategy: "jwt" },
     pages: {
         signIn: "/auth/login",

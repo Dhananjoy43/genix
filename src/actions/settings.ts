@@ -3,9 +3,9 @@
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 
-import { update } from "@/auth";
+import { unstable_update } from "@/auth";
 import { db } from "@/lib/db";
-import { SettingsSchema } from "@/schemas";
+import { SettingsSchema } from "@/schemas/auth.schema";
 import { getUserByEmail, getUserById } from "@/helpers/user";
 import { currentUser } from "@/lib/auth";
 import { generateVerificationToken } from "@/lib/tokens";
@@ -20,7 +20,7 @@ export const settings = async (
         return { error: "Unauthorized" }
     }
 
-    const dbUser = await getUserById(user.id);
+    const dbUser = await getUserById(user.id as string);
 
     if (!dbUser) {
         return { error: "Unauthorized" }
@@ -76,12 +76,11 @@ export const settings = async (
         }
     });
 
-    update({
+    unstable_update({
         user: {
             name: updatedUser.name,
             email: updatedUser.email,
             isTwoFactorEnabled: updatedUser.isTwoFactorEnabled,
-            role: updatedUser.role,
         }
     });
 
